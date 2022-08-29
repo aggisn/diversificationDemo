@@ -1,0 +1,77 @@
+package ${package.Service};
+
+import ${package.Entity}.${entity};
+import com.baomidou.mybatisplus.extension.service.IService;
+import java.util.List;
+/**
+ * <p>
+ * $!{table.comment} 服务类
+ * </p>
+ *
+ * @author ${author}
+ * @since ${date}
+ */
+public interface ${table.serviceName} extends ${superServiceClass}<${entity}> {
+
+        /**
+         * 插入记录
+         *
+         * @param record 记录
+         * @return 插入条数
+         * @throws
+         */
+
+    ${table.entityName}DTO save(${table.entityName}DTO record) throws EarthquakeException;
+
+        /**
+         * 根据主键id获取记录
+         *
+         * @param id id
+         * @return 记录
+         * @throws
+         */
+    ${table.entityName}DTO selectByPrimaryKey(Long id) throws EarthquakeException;
+
+        /**
+         * 根据主键id更新
+         *
+         * @param record 记录
+         * @return 更新数
+         * @throws
+         */
+    ${table.entityName}DTO updateByPrimaryKey(${table.entityName}DTO record) throws EarthquakeException;
+
+        /**
+         * 根据主键id删除
+         *
+         * @param id id
+         * @return 删除条数
+         * @throws
+         */
+        Boolean deleteByPrimaryKey(Long id) throws EarthquakeException;
+
+        /**
+         * 根据条件获取集合
+         *
+         * @param param 条件类
+         * @return 集合
+         */
+        RequestMap selectByCondition(${table.entityName}Param param);
+
+        /**
+         * 根据条件获取所有的对象集合
+         * @param param 条件
+         * @return 集合
+         */
+        List<${table.entityName}Entity> getAll(${table.entityName}Param param);
+
+
+
+        /**
+    * 导出excel表格
+    * @param param
+    * @return
+    */
+        List<${table.entityName}Entity> data(${table.entityName}Param param);
+
+        }

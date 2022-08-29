@@ -1,0 +1,161 @@
+package ${package.ServiceImpl};
+
+import ${package.Mapper}.${table.mapperName};
+import ${package.Service}.${table.serviceName};
+import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+import org.apache.commons.lang3.StringUtils;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import lombok.extern.slf4j.Slf4j;
+import java.util.List;
+import java.util.Date;
+import java.util.ArrayList;
+/**
+ * <p>
+ * $!{table.comment} 服务实现类
+ * </p>
+ *
+ * @author ${author}
+ * @since ${date}
+ */
+@Service
+@Slf4j
+public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.mapperName}, ${entity}Entity> implements ${table.serviceName} {
+
+
+@Autowired
+private ${table.mapperName} ${table.entityPath}Mapper;
+
+@Autowired
+private IdWorkerService idWorkerService;
+
+private static final String SERVICE_NAME = "$!{table.comment}";
+
+
+@Override
+@Transactional(rollbackFor = EarthquakeException.class, propagation = Propagation.REQUIRED)
+public ${entity}DTO save(${entity}DTO record) throws EarthquakeException {
+    ${entity}Entity entity = DozerUtil.trans(record, ${entity}Entity.class);
+       //给对象赋值
+        entity.setId(idWorkerService.nextId());
+        int insert = ${table.entityPath}Mapper.insert(entity);
+        if (insert < 1) {
+        log.error(String.format(SERVICE_NAME+" %s 新增失败", entity.toString()));
+        throw new EarthquakeException(-1, String.format("$!{table.comment}事件 %s 新增失败", entity.toString()));
+        }
+        return selectByPrimaryKey(entity.getId());
+        }
+
+@Override
+public ${entity}DTO selectByPrimaryKey(Long id) throws EarthquakeException {
+    ${entity}DTO dto;
+        LambdaQueryWrapper< ${entity}Entity> dictEntityQueryWrapper = new QueryWrapper< ${entity}Entity>().lambda()
+        .eq( ${entity}Entity::getId,id)
+        .isNull( ${entity}Entity::getDeleted);
+    ${entity}Entity entity = ${table.entityPath}Mapper.selectOne(dictEntityQueryWrapper);
+        if (entity == null) {
+        log.error(String.format(SERVICE_NAME+"：%s 不存在", id));
+        throw new EarthquakeException(-1, String.format(SERVICE_NAME+"id：%s 不存在", id));
+        }
+        dto = DozerUtil.trans(entity, ${entity}DTO.class);
+        log.info(String.format(SERVICE_NAME+"id：%s", entity.toString()));
+        return dto;
+        }
+
+@Override
+@Transactional(rollbackFor = EarthquakeException.class, propagation = Propagation.REQUIRED)
+public ${entity}DTO updateByPrimaryKey(${entity}DTO record) throws EarthquakeException {
+        // 存在性检查
+        checkExist(record.getId());
+    ${entity}Entity entity = DozerUtil.trans(record, ${entity}Entity.class);
+
+    //赋值
+
+        LambdaUpdateWrapper<${entity}Entity>${table.entityPath}EntityWrapper = new UpdateWrapper<${entity}Entity>()
+        .lambda()
+        .eq(${entity}Entity::getId, entity.getId());
+
+        int update = ${table.entityPath}Mapper.update(entity, ${table.entityPath}EntityWrapper);
+        if (update < 1) {
+        log.error(String.format(SERVICE_NAME+" %s 修改失败", entity.toString()));
+        throw new EarthquakeException(-1, String.format(SERVICE_NAME+" %s 修改失败", entity.toString()));
+        }
+        return selectByPrimaryKey(entity.getId());
+        }
+
+@Override
+public Boolean deleteByPrimaryKey(Long id) throws EarthquakeException {
+        // 存在性检查
+        checkExist(id);
+
+    ${entity}Entity  ${table.entityPath}Entity = new ${entity}Entity();
+
+        ${table.entityPath}Entity.setId(id);
+        ${table.entityPath}Entity.setDeleted(new Date());
+        int deleteEffectCnt = ${table.entityPath}Mapper.updateById(${table.entityPath}Entity);
+
+        if (deleteEffectCnt < 1) {
+        log.error(String.format(SERVICE_NAME+" %s 删除失败", id));
+        throw new EarthquakeException(-1, String.format(SERVICE_NAME+" %s 删除失败", id));
+        }
+        return true;
+        }
+
+
+@Override
+public RequestMap selectByCondition(${entity}Param param) {
+        PageHelper.startPage(param.getPageNo(), param.getPageSize());
+        List<${entity}Entity> list = getAll(param);
+        PageInfo pageInfo = new PageInfo(list);
+        List<${entity}VO> voList = DozerUtil.trans(list, ${entity}VO.class);
+
+        return new RequestMap(pageInfo, voList);
+        }
+
+@Override
+public List<${entity}Entity> getAll(${entity}Param param) {
+
+    //入参
+
+        #*LambdaQueryWrapper<${entity}Entity>${table.entityPath}EntityQueryWrapper = new QueryWrapper<${entity}Entity>().lambda()
+        .like(${entity}Entity::getName, param.getName());
+
+
+        return  ${table.entityPath}Mapper.selectList(${table.entityPath}EntityQueryWrapper);*#
+        return null;
+        }
+
+
+@Override
+public List<${entity}Entity> data(${entity}Param param) {
+        List<${entity}Entity> list = new ArrayList<>();
+        List<${entity}Entity>  ${table.entityPath}Entities = getAll(param);
+        for (${entity}Entity ${table.entityPath}Entity : ${table.entityPath}Entities) {
+        list.add(${table.entityPath}Entity);
+        }
+        return list;
+        }
+
+
+/**
+* 检查参数是否存在
+* @param id
+*/
+private void checkExist(Long id) throws EarthquakeException {
+
+        LambdaQueryWrapper< ${entity}Entity> dictEntityQueryWrapper = new QueryWrapper< ${entity}Entity>().lambda()
+        .eq( ${entity}Entity::getId,id)
+        .isNull( ${entity}Entity::getDeleted);
+    ${entity}Entity entity = ${table.entityPath}Mapper.selectOne(dictEntityQueryWrapper);
+        if (null == entity) {
+        log.error(String.format("$!{table.comment}事件id: %s 不存在，删除失败", id));
+        throw new EarthquakeException(-1,String.format("$!{table.comment}事件id: %s 不存在，删除失败", id));
+        }
+        }
+}

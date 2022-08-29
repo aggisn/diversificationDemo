@@ -1,0 +1,175 @@
+package ${package.Controller};
+
+import java.util.Arrays;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import ${package.Entity}.${table.entityName}Entity;
+import ${package.Service}.${table.serviceName};
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+import lombok.extern.slf4j.Slf4j;
+
+import com.alibaba.excel.EasyExcel;
+import com.alibaba.fastjson.JSON;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.Map;
+
+
+/**
+ * 描述：$!{table.comment}
+ *
+ * @author ${author}
+ *
+ */
+@Slf4j
+@RestController
+@RequestMapping("/api/do/v1")
+public class ${table.entityName}Controller{
+        @Autowired
+        private ${table.entityName}Service ${table.entityPath}Service;
+
+        private static final String SERVICE_NAME = "$!{table.comment}";
+
+/**
+ * 新增
+ *
+ * @param request
+ * @return
+ * @throws
+ */
+
+@PostMapping("/${table.entityName}")
+public Result<${table.entityName}VO>insert(@Validated() @RequestBody ${table.entityName}Request request){
+
+    ${table.entityName}DTO trans=DozerUtil.trans(request,${table.entityName}DTO.class);
+        try{
+    ${table.entityName}DTO insert=${table.entityPath}Service.save(trans);
+    ${table.entityName}VO ${table.entityPath}VO=DozerUtil.trans(insert,${table.entityName}VO.class);
+        return Result.ofSuccess(${table.entityPath}VO,"新增成功");
+        }catch(EarthquakeException e){
+        log.error(e.getMessage());
+        return Result.ofFail(-1,SERVICE_NAME+e.getMessage());
+        }
+        }
+
+
+/**
+ * 修改
+ *
+ * @param request
+ * @param id
+ * @return
+ * @throws
+ */
+
+@PutMapping("/${table.entityName}/{id}")
+public Result<${table.entityName}VO>update(@Validated() @RequestBody ${table.entityName}Request request,@PathVariable("id") Long id){
+        try{
+    ${table.entityName}DTO dto=DozerUtil.trans(request,${table.entityName}DTO.class);
+        dto.setId(id);
+        dto=${table.entityPath}Service.updateByPrimaryKey(dto);
+    ${table.entityName}VO ${table.entityPath}VO=DozerUtil.trans(dto,${table.entityName}VO.class);
+        return Result.ofSuccess(${table.entityPath}VO,"修改成功");
+        }catch(EarthquakeException e){
+        log.error(e.getMessage());
+        return Result.ofFail(-1,SERVICE_NAME+"修改失败,"+e.getMessage());
+        }
+        }
+
+
+/**
+ * 查看详情
+ *
+ * @param
+ * @return
+ * @throws
+ */
+@GetMapping("/${table.entityName}/{id}")
+public Result<${table.entityName}VO>select(@PathVariable("id") Long id){
+        try{
+    ${table.entityName}DTO dto=${table.entityPath}Service.selectByPrimaryKey(id);
+    ${table.entityName}VO ${table.entityPath}VO=DozerUtil.trans(dto,${table.entityName}VO.class);
+        return Result.ofSuccess(${table.entityPath}VO,"查询成功");
+        }catch(EarthquakeException e){
+        log.error(e.getMessage());
+        return Result.ofFail(-1,SERVICE_NAME+"查询失败，"+e.getMessage());
+        }
+        }
+
+/**
+ * 删除
+ *
+ * @param id
+ * @return
+ */
+@DeleteMapping(value = "/${table.entityName}/{id}")
+public Result<Boolean> delete(@PathVariable("id") Long id) {
+        try {
+                Boolean result = ${table.entityPath}Service.deleteByPrimaryKey(id);
+                return result ? Result.ofSuccess(result, "删除成功") : Result.ofFail(-1, "删除失败");
+        } catch (EarthquakeException e) {
+                log.error(e.getMessage());
+                return Result.ofFail(-1, SERVICE_NAME + "删除失败，" + e.getMessage());
+        }
+
+}
+
+/**
+ * 查询列表
+ * @param param
+ * @return
+ * @throws
+ */
+@PostMapping("/${table.entityName}/list")
+public Result<RequestMap> list(@Validated @RequestBody ${table.entityName}Param param){
+
+        try{
+        RequestMap requestMap=${table.entityPath}Service.selectByCondition(param);
+        return Result.ofSuccess(requestMap,"查询成功");
+        }catch(Exception e){
+        log.error("错误信息",e);
+        return Result.ofFail(-1,SERVICE_NAME+"查询列表失败，"+e.getMessage());
+        }
+        }
+
+
+
+
+        /**
+     * 导出
+     * @param response
+     * @throws
+     */
+        @PostMapping("/historicalImportantEvents/export")
+        public void downloadFailedUsingJson(HttpServletResponse response, @RequestBody ${table.entityName}Param param) throws IOException {
+                try {
+                        response.setContentType("application/vnd.ms-excel");
+                        response.setCharacterEncoding("utf-8");
+                        // 这里URLEncoder.encode可以防止中文乱码 当然和easyexcel没有关系
+                        String fileName = URLEncoder.encode("$!{table.comment}", "UTF-8").replaceAll("\\+", "%20");
+                        response.setHeader("Content-disposition", "attachment;filename*=utf-8''" + fileName + ".xlsx");
+                        // 这里需要设置不关闭流
+                        EasyExcel.write(response.getOutputStream(), ${table.entityName}Entity.class).autoCloseStream(Boolean.FALSE).sheet("$!{table.comment}")
+                                .doWrite(${table.entityPath}Service.data(param));
+                } catch (Exception e) {
+                        // 重置response
+                        response.reset();
+                        response.setContentType("application/json");
+                        response.setCharacterEncoding("utf-8");
+                        Map<String, String> map = new HashMap<String, String>();
+                        map.put("status", "failure");
+                        map.put("message", "下载文件失败" + e.getMessage());
+                        response.getWriter().println(JSON.toJSONString(map));
+                }
+        }
+
+}

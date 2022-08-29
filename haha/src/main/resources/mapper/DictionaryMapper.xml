@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.DictionaryMapper">
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.example.demo.entity.DictionaryEntity">
+        <result column="id" property="id" jdbcType="BIGINT"/>
+        <result column="dictionary_type" property="dictionaryType" jdbcType="VARCHAR"/>
+        <result column="dictionary_code" property="dictionaryCode" jdbcType="VARCHAR"/>
+        <result column="dictionary_name" property="dictionaryName" jdbcType="VARCHAR"/>
+        <result column="sort" property="sort" jdbcType="INTEGER"/>
+        <result column="remark" property="remark" jdbcType="VARCHAR"/>
+        <result column="created" property="created" jdbcType="TIMESTAMP" />
+        <result column="updated" property="updated" jdbcType="TIMESTAMP" />
+        <result column="deleted" property="deleted" jdbcType="TIMESTAMP" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+            id,
+        dictionary_type, dictionary_code, dictionary_name, sort, remark, created, updated, deleted
+    </sql>
+
+    <insert id="batchInsert"
+            parameterType="com.example.demo.entity.DictionaryEntity">
+        insert into t_dictionary ( id,
+        dictionary_type, dictionary_code, dictionary_name,
+        sort, remark, create_time, update_time)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (
+            #{item.id,jdbcType=BIGINT},
+            #{item.dictionaryType,jdbcType=VARCHAR},
+            #{item.dictionaryCode,jdbcType=VARCHAR},
+            #{item.dictionaryName,jdbcType=VARCHAR},
+            #{item.sort,jdbcType=INTEGER},
+            #{item.remark,jdbcType=VARCHAR},
+            NOW(), NOW())
+        </foreach>
+    </insert>
+
+
+</mapper>

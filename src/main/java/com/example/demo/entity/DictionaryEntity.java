@@ -2,6 +2,7 @@ package com.example.demo.entity;
 
 import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -9,6 +10,7 @@ import java.util.Date;
 
 
 @Data
+@TableName("t_dictionary")
 public class DictionaryEntity {
 
 

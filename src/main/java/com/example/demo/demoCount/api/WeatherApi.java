@@ -1,4 +1,4 @@
-package com.example.demo.demoCount.getOpenid;
+package com.example.demo.demoCount.api;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -6,20 +6,21 @@ import java.net.URL;
 import java.net.URLConnection;
 
 /**
- * @author ZLJ
- * @description
- * @date 2022/7/8
- * 获取微信小程序的appid
+ * @Classname WeatherApi
+ * @Date 2022/9/6 10:40
+ * @Author: zlj
  */
-public class GetOpenIdUtil {
+public class WeatherApi {
 
-
-    public String getopenid(String appid,String code,String secret) {
+    public String getWeather(String ak, String districtId) {
         BufferedReader in = null;
-        //appid和secret是开发者分别是小程序ID和小程序密钥，开发者通过微信公众平台-》设置-》开发设置就可以直接获取，
-        String url="https://api.weixin.qq.com/sns/jscode2session?appid="
-                +appid+"&secret="+secret+"&js_code="+code+"&grant_type=authorization_code";
-        try{
+        String url = "https://api.map.baidu.com/weather/v1/?district_id=" +
+                districtId +
+                "&output=JSON&ak=" +
+                ak +
+                "&data_type=all";
+
+        try {
             URL weChatUrl = new URL(url);
             // 打开和URL之间的连接
             URLConnection connection = weChatUrl.openConnection();
@@ -37,7 +38,7 @@ public class GetOpenIdUtil {
                 sb.append(line);
             }
             return sb.toString();
-        }catch (Exception e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
         // 使用finally块来关闭输入流

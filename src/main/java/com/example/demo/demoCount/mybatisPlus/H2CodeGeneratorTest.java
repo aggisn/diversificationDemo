@@ -26,26 +26,73 @@ import java.util.Map;
 public class H2CodeGeneratorTest {
     // 设置自定义路径
 
-    private final static String CONTROLLER_PATH = "E:\\workspace\\diversificationDemo\\src\\main";
-    private final static String outputDir = CONTROLLER_PATH + "\\java";
-    private final static String entity = CONTROLLER_PATH + "\\java\\com\\example\\demo\\entity";
-    private final static String mapper = CONTROLLER_PATH + "\\java\\com\\example\\demo\\mapper";
-    private final static String mapperXml = CONTROLLER_PATH + "\\resources\\mapper";
-    private final static String service = CONTROLLER_PATH + "\\java\\com\\example\\demo\\service";
-    private final static String serviceImpl = CONTROLLER_PATH + "\\java\\com\\example\\demo\\service\\impl";
-    private final static String controller = CONTROLLER_PATH + "\\java\\com\\example\\demo\\controller";
-
-//    private final static String CONTROLLER_PATH = "D:\\SDZGYJGL\\cuiheng\\safety-supervision-backend\\ruoyi-admin\\src\\main";
-//    private final static String OTHERS_PATH = "D:\\SDZGYJGL\\cuiheng\\safety-supervision-backend\\ruoyi-system\\src\\main";
-//    private final static String OTHERS_PATH1 = "D:\\SDZGYJGL\\cuiheng\\safety-supervision-backend\\ruoyi-common\\src\\main";
+//    private final static String CONTROLLER_PATH = "E:\\workspace\\diversificationDemo\\src\\main";
 //    private final static String outputDir = CONTROLLER_PATH + "\\java";
-//    private final static String entity = OTHERS_PATH1 + "\\java\\com\\ruoyi\\common\\core\\domain\\entity";
-//    private final static String mapper = OTHERS_PATH + "\\java\\com\\ruoyi\\system\\mapper";
-//    private final static String mapperXml = OTHERS_PATH + "\\\\resources\\\\mapper";
-//    private final static String service = OTHERS_PATH + "\\java\\com\\ruoyi\\system\\service";
-//    private final static String serviceImpl = OTHERS_PATH + "\\java\\com\\ruoyi\\system\\service\\impl";
-//    private final static String controller = CONTROLLER_PATH + "\\java\\com\\ruoyi\\web\\controller\\business";
+//    private final static String entity = CONTROLLER_PATH + "\\java\\com\\example\\demo\\entity";
+//    private final static String mapper = CONTROLLER_PATH + "\\java\\com\\example\\demo\\mapper";
+//    private final static String mapperXml = CONTROLLER_PATH + "\\resources\\mapper";
+//    private final static String service = CONTROLLER_PATH + "\\java\\com\\example\\demo\\service";
+//    private final static String serviceImpl = CONTROLLER_PATH + "\\java\\com\\example\\demo\\service\\impl";
+//    private final static String controller = CONTROLLER_PATH + "\\java\\com\\example\\demo\\controller";
+
+//    翠亨
+//    private final static String CONTROLLER_PATH = "D:\\SDZGYJGL\\cuiheng\\safety-supervision-backend\\safe-admin\\src\\main";
 //
+//    private final static String OTHERS_PATH = "D:\\SDZGYJGL\\cuiheng\\safety-supervision-backend\\safe-common\\src\\main";
+//
+//    private final static String OTHERS_PATH1 = "D:\\SDZGYJGL\\cuiheng\\safety-supervision-backend\\safe-system\\src\\main";
+//
+//    private final static String outputDir = CONTROLLER_PATH + "\\java";
+//
+//    /**
+//     * entity位置
+//     */
+//    private final static String entity = OTHERS_PATH + "\\java\\com\\safe\\common\\core\\domain\\entity";
+//
+//    /**
+//     * mapper位置
+//     */
+//    private final static String mapper = OTHERS_PATH1 + "\\java\\com\\safe\\system\\mapper";
+//    private final static String mapperXml = OTHERS_PATH1 + "\\resources\\mapper";
+//
+//    /**
+//     * service文件位置
+//     */
+//    private final static String service = OTHERS_PATH1 + "\\java\\com\\safe\\system\\service";
+//    private final static String serviceImpl = OTHERS_PATH1 + "\\java\\com\\safe\\system\\service\\impl";
+//    /**
+//     * contrller文件位置
+//     */
+//    private final static String controller = CONTROLLER_PATH + "\\java\\com\\safe\\web\\controller\\business";
+
+    private final static String CONTROLLER_PATH = "D:\\SDZGYJGL\\xuanwu\\xuanwu-warning-backend\\ac-console\\src\\main";
+
+    private final static String OTHERS_PATH = "D:\\SDZGYJGL\\xuanwu\\xuanwu-warning-backend\\ac-core\\src\\main";
+
+
+
+    private final static String outputDir = CONTROLLER_PATH + "\\java";
+
+    /**
+     * entity位置
+     */
+    private final static String entity = OTHERS_PATH + "\\java\\com\\speedchina\\ac\\core\\datasource\\entity";
+
+    /**
+     * mapper位置  D:\SDZGYJGL\suzhou\sp-dev-suzhou-natural-disaster-application-achievement-project-backend\ac-core\src\main\java\com\speedchina\ac\core\repository
+     */
+    private final static String mapper = OTHERS_PATH + "\\java\\com\\speedchina\\ac\\core\\repository";
+    private final static String mapperXml = OTHERS_PATH + "\\resources\\mapper";
+
+    /**
+     * service文件位置
+     */
+    private final static String service = OTHERS_PATH + "\\java\\com\\speedchina\\ac\\core\\service";
+    private final static String serviceImpl = OTHERS_PATH + "\\java\\com\\speedchina\\ac\\core\\service\\impl";
+    /**
+     * contrller文件位置
+     */
+    private final static String controller = CONTROLLER_PATH + "\\java\\com\\speedchina\\ac\\console\\controller\\business";
 
 /**
  * 执行初始化数据库脚本
@@ -68,9 +115,9 @@ public class H2CodeGeneratorTest {
      */
 
     private static final DataSourceConfig DATA_SOURCE_CONFIG = new DataSourceConfig
-            .Builder("jdbc:mysql://172.0.0.1:3306/safe_new?" +
+            .Builder("jdbc:mysql://192.168.4.78:6033/xuanwu-natural-disaster?" +
             "useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&autoReconnect=true&serverTimezone=GMT%2B8",
-            "root", "123")
+            "root", "SpeedCHINA85581101")
             .dbQuery(new MySqlQuery())
             .schema("mybatis-plus")
             .typeConvert(new MySqlTypeConvert())
@@ -110,7 +157,7 @@ public class H2CodeGeneratorTest {
 
     private Builder packageConfig() {
         return new Builder()
-                .parent("com.example.demo");
+                .parent("com.speedchina.ac");
         //   .parent("com.speedchina.hd");
     }
 
@@ -166,13 +213,13 @@ public class H2CodeGeneratorTest {
         //去掉表前缀
         generator.strategy(strategyConfig()
 //                         .addInclude("security_monitoring_equipment_information").addTablePrefix("t_", "c_","t_risks_")
-                       .addInclude("emergency_exercise_plan").addTablePrefix("t_", "c_","t_risks_")
+                       .addInclude("t_user").addTablePrefix("t_", "c_","safety_")
                 .entityBuilder()
                 .enableLombok()
                 .enableTableFieldAnnotation()
                 .addTableFills(new Column("created", FieldFill.INSERT))
                 .addTableFills(new Property("updated", FieldFill.INSERT_UPDATE))
-                .addIgnoreColumns("deleted")
+//                .addIgnoreColumns("deleted")
                 .formatFileName("%sEntity")
                 .build()
                 .serviceBuilder()

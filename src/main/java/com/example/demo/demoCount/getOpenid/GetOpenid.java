@@ -33,6 +33,7 @@ public class GetOpenid {
     }
 
 
+
     @GetMapping(value = "/getOpenid")
     public Result Login(@RequestParam("appid") String appid ,@RequestParam("js_code") String js_code , @RequestParam("secret") String secret) {
         GetOpenIdUtil getOpenIdUtil=new GetOpenIdUtil();
